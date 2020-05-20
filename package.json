@@ -32,7 +32,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "vue3-redux",
+  "name": "@yogurt1/vue3-redux",
   "author": "yogurt1",
   "module": "dist/vue3-redux.esm.js",
   "devDependencies": {

@@ -13,22 +13,22 @@ export function getSubForStore(store: Store): ReduxSub {
 }
 
 export class ReduxSub {
-  #store: Store;
-  #listeners: Set<Function>;
-  #unsubscribe: Function | null = null;
+  private _store: Store;
+  private _listeners: Set<Function>;
+  private _unsubscribe: Function | null = null;
 
   constructor(store: Store) {
-    this.#store = store;
-    this.#listeners = new Set();
+    this._store = store;
+    this._listeners = new Set();
   }
 
   addListener(listener: Function) {
-    this.#listeners.add(listener);
+    this._listeners.add(listener);
 
     // first subscription - subscribe to store
-    if (this.#listeners.size === 1 && !this.#unsubscribe) {
-      this.#unsubscribe = this.#store.subscribe(() => {
-        this.#listeners.forEach(listener => {
+    if (this._listeners.size === 1 && !this._unsubscribe) {
+      this._unsubscribe = this._store.subscribe(() => {
+        this._listeners.forEach(listener => {
           listener();
         });
       });
@@ -36,12 +36,12 @@ export class ReduxSub {
   }
 
   removeListener(listener: Function) {
-    this.#listeners.delete(listener);
+    this._listeners.delete(listener);
 
     // last unsubscribed, unsubscribe from store
-    if (this.#listeners.size === 0 && this.#unsubscribe) {
-      this.#unsubscribe();
-      this.#unsubscribe = null;
+    if (this._listeners.size === 0 && this._unsubscribe) {
+      this._unsubscribe();
+      this._unsubscribe = null;
     }
   }
 }

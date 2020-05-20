@@ -1,12 +1,12 @@
-import { createHooks } from './hooks/createHooks';
+import { ReduxHooks, createHooks } from './hooks/createHooks';
+import { mixin } from './mixin';
 
-export { mixin } from './mixin';
-
-export { ReduxHooks } from './hooks/createHooks';
-
-export const {
+const {
   provideStore,
   useStore,
   useDispatch,
   useSelector
 } = createHooks();
+
+export { provideStore, useStore, useDispatch, useSelector, mixin, ReduxHooks };
+
