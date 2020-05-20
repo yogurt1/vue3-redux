@@ -1,0 +1,8 @@
+.git
+.github
+.gitignore
+.prettierrc
+tsconfig.json
+package-lock.json
+src
+test

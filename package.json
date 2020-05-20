@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.3.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -32,8 +32,11 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@yogurt1/vue3-redux",
+  "name": "vue3-redux",
   "author": "yogurt1",
+  "repository": {
+    "github": "https://github.com/yogurt1/vue3-redux"
+  },
   "module": "dist/vue3-redux.esm.js",
   "devDependencies": {
     "@vue/composition-api": "^0.5.0",

@@ -3,4 +3,12 @@ import { mixin } from './mixin';
 
 const { provideStore, useStore, useDispatch, useSelector } = createHooks();
 
-export { provideStore, useStore, useDispatch, useSelector, mixin, ReduxHooks };
+export {
+  provideStore,
+  useStore,
+  useDispatch,
+  useSelector,
+  mixin,
+  createHooks,
+  ReduxHooks,
+};
