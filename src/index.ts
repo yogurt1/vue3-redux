@@ -1,5 +1,5 @@
 import { ReduxHooks, createHooks } from './hooks/createHooks';
-import { mixin } from './mixin';
+import { createMixin, mixin } from './mixin';
 
 // default hooks
 const {
@@ -11,6 +11,7 @@ const {
 
 export {
   mixin,
+  createMixin,
   createHooks,
   ReduxHooks,
   provideStore,

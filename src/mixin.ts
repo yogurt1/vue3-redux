@@ -1,20 +1,37 @@
-import Vue from 'vue';
+import Vue, { ComponentOptions } from 'vue';
 
 /**
  * Vue 2.x-style api
  */
 
-export function mixin(_Vue: typeof Vue): void {
-  _Vue.mixin({
-    beforeCreate(this: any) {
-      // store injection
-      const store = this.$options.store ?? this.$parent?.$store;
+export function createMixin<V extends Vue = Vue>({
+  optionsKey,
+  instanceKey
+}: {
+  optionsKey: string,
+  instanceKey: string
+}): ComponentOptions<V> {
+  return {
+    beforeCreate() {
+      Object.defineProperty(this, instanceKey, {
+        configurable: false,
 
-      if (!store) {
-        throw new Error('store should be provided');
-      }
+        get() {
+          // store injection
+          const store = this.$options[optionsKey] ?? this.$parent?.[instanceKey];
 
-      this.$store = store;
-    },
-  });
+          if (!store) {
+            throw new Error('store should be provided');
+          }
+
+          return store;
+        }
+      })
+    }
+  }
 }
+
+export const mixin = createMixin<any>({
+  optionsKey: 'store',
+  instanceKey: '$store',
+});
