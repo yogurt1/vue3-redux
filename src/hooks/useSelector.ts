@@ -2,8 +2,7 @@ import { Store } from 'redux';
 import { ref, onUnmounted, Ref } from '@vue/composition-api';
 import { getSubForStore } from '../utils/ReduxSub';
 import { UseStore } from './useStore';
-
-type StateOf<T extends Store> = ReturnType<T['getState']>;
+import { StateOf } from './types';
 
 function defaultCompare(a: unknown, b: unknown): boolean {
   return a === b;

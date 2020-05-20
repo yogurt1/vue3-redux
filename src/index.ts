@@ -1,14 +1,20 @@
 import { ReduxHooks, createHooks } from './hooks/createHooks';
 import { mixin } from './mixin';
 
-const { provideStore, useStore, useDispatch, useSelector } = createHooks();
+// default hooks
+const {
+  provideStore,
+  useStore,
+  useDispatch,
+  useSelector
+} = createHooks();
 
 export {
+  mixin,
+  createHooks,
+  ReduxHooks,
   provideStore,
   useStore,
   useDispatch,
   useSelector,
-  mixin,
-  createHooks,
-  ReduxHooks,
 };
