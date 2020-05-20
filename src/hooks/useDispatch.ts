@@ -6,11 +6,11 @@ export interface UseDispatch<D extends Dispatch> {
 }
 
 export function createUseDispatch<T extends Store>(
-  useStore: UseStore<T>,
+  useStore: UseStore<T>
 ): UseDispatch<T['dispatch']> {
   return function useDispatch() {
     const store = useStore();
-    return function (...args) {
+    return function(...args) {
       return store.dispatch(...args);
     };
   };

@@ -17,7 +17,9 @@ export interface UseSelector<T> {
   <U>(selector: (state: T) => U, compare?: Compare<U>): Ref<Readonly<U>>;
 }
 
-export function createUseSelector<T extends Store>(useStore: UseStore<T>): UseSelector<StateOf<T>> {
+export function createUseSelector<T extends Store>(
+  useStore: UseStore<T>
+): UseSelector<StateOf<T>> {
   return function useSelector(selector, compare = defaultCompare) {
     const store = useStore();
     const sub = getSubForStore(store);
