@@ -1,5 +1,7 @@
 # Vue3-Redux bindings
 
+![CI](https://github.com/yogurt1/vue3-redux/workflows/CI/badge.svg)
+
 ## public api
 
 - `provideStore(store)` - provide redux store
