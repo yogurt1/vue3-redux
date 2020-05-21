@@ -21,7 +21,7 @@ export function createUseSelector<T extends Store>(
 ): UseSelector<StateOf<T>> {
   return function useSelector(selector, compare = defaultCompare) {
     type U = ReturnType<typeof selector>;
-    
+
     const store = useStore();
 
     const selectedStateRef: Ref<U> = ref(selector(store.getState()));

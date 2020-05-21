@@ -6,10 +6,10 @@ import Vue, { ComponentOptions } from 'vue';
 
 export function createMixin<V extends Vue = Vue>({
   optionsKey,
-  instanceKey
+  instanceKey,
 }: {
-  optionsKey: string,
-  instanceKey: string
+  optionsKey: string;
+  instanceKey: string;
 }): ComponentOptions<V> {
   return {
     beforeCreate() {
@@ -18,17 +18,18 @@ export function createMixin<V extends Vue = Vue>({
 
         get() {
           // store injection
-          const store = this.$options[optionsKey] ?? this.$parent?.[instanceKey];
+          const store =
+            this.$options[optionsKey] ?? this.$parent?.[instanceKey];
 
           if (!store) {
             throw new Error('store should be provided');
           }
 
           return store;
-        }
-      })
-    }
-  }
+        },
+      });
+    },
+  };
 }
 
 export const mixin = createMixin<any>({
