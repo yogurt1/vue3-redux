@@ -1,5 +1,5 @@
 import { Store } from 'redux';
-import { ref, onUnmounted, Ref } from '@vue/composition-api';
+import { ref, onUnmounted, Ref, computed } from '@vue/composition-api';
 import { getSubForStore } from '../utils/ReduxSub';
 import { UseStore } from './useStore';
 import { StateOf } from './types';
@@ -20,22 +20,21 @@ export function createUseSelector<T extends Store>(
   useStore: UseStore<T>
 ): UseSelector<StateOf<T>> {
   return function useSelector(selector, compare = defaultCompare) {
-    type U = ReturnType<typeof selector>;
-
+    const recomputeTrigger = ref(false);
     const store = useStore();
 
-    const selectedStateRef: Ref<U> = ref(selector(store.getState()));
-    const sub = getSubForStore(store);
+    let lastSelectedState = selector(store.getState());
 
     function observeState() {
-      const selectedState = selector(store.getState());
+      const prevSelectedState = lastSelectedState;
+      lastSelectedState = selector(store.getState());
 
-      if (compare(selectedStateRef.value, selectedState)) {
-        return;
+      if (!compare(prevSelectedState, lastSelectedState)) {
+        recomputeTrigger.value = !recomputeTrigger.value;
       }
-
-      selectedStateRef.value = selectedState;
     }
+
+    const sub = getSubForStore(store);
 
     sub.addListener(observeState);
 
@@ -43,6 +42,11 @@ export function createUseSelector<T extends Store>(
       sub.removeListener(observeState);
     });
 
-    return selectedStateRef;
+    return computed(() => {
+      // trigger recompute
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      recomputeTrigger.value;
+      return lastSelectedState;
+    });
   };
 }
