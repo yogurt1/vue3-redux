@@ -13,7 +13,7 @@ export interface Compare<U> {
 }
 
 export interface UseSelector<T> {
-  <U>(selector: (state: T) => U, compare?: Compare<U>): Ref<Readonly<U>>;
+  <U>(selector: (state: T) => U, compare?: Compare<U>): Readonly<Ref<Readonly<U>>>;
 }
 
 export function createUseSelector<T extends Store>(
