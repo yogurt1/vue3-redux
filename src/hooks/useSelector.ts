@@ -1,8 +1,22 @@
 import { Store } from 'redux';
-import { ref, onUnmounted, Ref, computed } from '@vue/composition-api';
-import { getSubForStore } from '../utils/ReduxSub';
+import { ref, onUnmounted, Ref, computed, watch } from '@vue/composition-api';
+import { Subscription } from '../utils/Subscription';
 import { UseStore } from './useStore';
 import { StateOf } from './types';
+
+const SUBS_MAP: WeakMap<Store, Subscription> = new WeakMap();
+
+function getSubscription(store: Store): Subscription {
+  const lastSubscription = SUBS_MAP.get(store);
+
+  if (lastSubscription) {
+    return lastSubscription;
+  }
+
+  const subscription = new Subscription(store);
+  SUBS_MAP.set(store, subscription);
+  return subscription;
+}
 
 function defaultCompare(a: unknown, b: unknown): boolean {
   return a === b;
@@ -13,40 +27,31 @@ export interface Compare<U> {
 }
 
 export interface UseSelector<T> {
-  <U>(selector: (state: T) => U, compare?: Compare<U>): Readonly<Ref<Readonly<U>>>;
+  <U>(selector: (state: T) => U, compare?: Compare<U>): Readonly<
+    Ref<Readonly<U>>
+  >;
 }
 
 export function createUseSelector<T extends Store>(
   useStore: UseStore<T>
 ): UseSelector<StateOf<T>> {
   return function useSelector(selector, compare = defaultCompare) {
-    const recomputeTrigger = ref(false);
     const store = useStore();
+    const sub = getSubscription(store);
+    const stateRef = sub.getRef();
+    const selectedStateRef = computed(() => selector(stateRef.value as any));
+    const optimizedSelectedStateRef = ref(selectedStateRef.value);
 
-    let lastSelectedState = selector(store.getState());
-
-    function observeState() {
-      const prevSelectedState = lastSelectedState;
-      lastSelectedState = selector(store.getState());
-
-      if (!compare(prevSelectedState, lastSelectedState)) {
-        recomputeTrigger.value = !recomputeTrigger.value;
+    watch(selectedStateRef, (selectedState, prevSelectedState) => {
+      if (!compare(selectedState, prevSelectedState)) {
+        optimizedSelectedStateRef.value = selectedState as any;
       }
-    }
-
-    const sub = getSubForStore(store);
-
-    sub.addListener(observeState);
+    });
 
     onUnmounted(() => {
-      sub.removeListener(observeState);
+      sub.releaseRef();
     });
 
-    return computed(() => {
-      // trigger recompute
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      recomputeTrigger.value;
-      return lastSelectedState;
-    });
+    return selectedStateRef;
   };
 }
